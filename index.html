@@ -4,167 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>আজকের খবর</title>
-    
-    <!-- ✨ Beautiful, multilingual fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
-            --bg: #f6f4f0;
-            --card: #ffffff;
-            --text: #2a2a2a;
-            --text-muted: #6b6b6b;
-            --border: #e0ddd7;
-            --accent: #8c6a48;
-            --accent-hover: #6d5035;
-            --shadow: 0 2px 10px rgba(0,0,0,0.04);
-            --breaking: #dc2626; /* 🔴 Breaking news accent */
+            --bg: #f6f4f0; --card: #ffffff; --text: #2a2a2a; --text-muted: #6b6b6b;
+            --border: #e0ddd7; --accent: #8c6a48; --accent-hover: #6d5035;
+            --shadow: 0 2px 10px rgba(0,0,0,0.04); --breaking: #dc2626;
         }
         [data-theme="dark"] {
-            --bg: #131417;
-            --card: #1c1d22;
-            --text: #d1d1d6;
-            --text-muted: #9a9da3;
-            --border: #2c2e35;
-            --accent: #b89b7a;
-            --accent-hover: #d4b896;
-            --shadow: 0 2px 14px rgba(0,0,0,0.3);
-            --breaking: #ef4444;
+            --bg: #131417; --card: #1c1d22; --text: #d1d1d6; --text-muted: #9a9da3;
+            --border: #2c2e35; --accent: #b89b7a; --accent-hover: #d4b896;
+            --shadow: 0 2px 14px rgba(0,0,0,0.3); --breaking: #ef4444;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: "Inter", "Noto Sans Bengali", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.65;
-            transition: background 0.3s ease, color 0.3s ease;
-            overflow-x: hidden;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
+            background: var(--bg); color: var(--text); line-height: 1.65;
+            transition: background 0.3s ease, color 0.3s ease; overflow-x: hidden;
+            text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        header {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 0.6rem 1.2rem;
-            position: sticky; top: 0; z-index: 10;
-            box-shadow: var(--shadow);
-        }
-        .header-left {
-            font-size: 0.82rem; color: var(--text-muted);
-            font-variant-numeric: tabular-nums; text-align: left;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            line-height: 1.45;
-        }
-        .day-names { 
-            font-weight: 700; color: var(--text); display: block; 
-            letter-spacing: 0.01em; font-size: 0.88rem;
-        }
+        header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+            background: var(--card); border-bottom: 1px solid var(--border); padding: 0.6rem 1.2rem;
+            position: sticky; top: 0; z-index: 10; box-shadow: var(--shadow); }
+        .header-left { font-size: 0.82rem; color: var(--text-muted); font-variant-numeric: tabular-nums;
+            text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.45; }
+        .day-names { font-weight: 700; color: var(--text); display: block; letter-spacing: 0.01em; font-size: 0.88rem; }
         .date-time { display: block; margin-top: 0.1rem; font-weight: 400; }
-        .masthead { 
-            display: flex; align-items: center; gap: 0.6rem; 
-            justify-content: center; 
-        }
-        .newspaper-icon {
-            width: 42px; height: 42px; flex-shrink: 0;
-            color: var(--accent); transition: transform 0.3s ease, color 0.3s ease;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
-        }
+        .masthead { display: flex; align-items: center; gap: 0.6rem; justify-content: center; }
+        .newspaper-icon { width: 42px; height: 42px; flex-shrink: 0; color: var(--accent); transition: transform 0.3s ease, color 0.3s ease; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); }
         .newspaper-icon:hover { transform: scale(1.05); color: var(--accent-hover); }
-        .site-title {
-            font-family: "Noto Sans Bengali", "Inter", system-ui, sans-serif;
-            font-size: 1.75rem; font-weight: 800; color: var(--text);
-            letter-spacing: 0.01em; line-height: 1.1;
-        }
-        .theme-btn {
-            background: var(--bg); border: 1px solid var(--border);
-            padding: 0.42rem 0.8rem; border-radius: 6px; cursor: pointer;
-            color: var(--text); font-size: 0.85rem; justify-self: end;
-            white-space: nowrap; transition: all 0.2s; font-weight: 500;
-        }
+        .site-title { font-family: "Noto Sans Bengali", "Inter", system-ui, sans-serif;
+            font-size: 1.75rem; font-weight: 800; color: var(--text); letter-spacing: 0.01em; line-height: 1.1; }
+        .theme-btn { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.8rem; border-radius: 6px; cursor: pointer;
+            color: var(--text); font-size: 0.85rem; justify-self: end; white-space: nowrap; transition: all 0.2s; font-weight: 500; }
         .theme-btn:hover { background: var(--border); }
         main { min-height: calc(100vh - 76px); background: var(--bg); }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(335px, 1fr));
-            gap: 1px;
-            background: var(--border);
-        }
-        .block {
-            background: var(--card);
-            padding: 1.25rem 1.3rem;
-            display: flex; flex-direction: column;
-        }
-        .block-header {
-            display: flex; align-items: center; gap: 0.55rem;
-            margin-bottom: 0.8rem; padding-bottom: 0.55rem;
-            border-bottom: 1px solid var(--border);
-        }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(335px, 1fr)); gap: 1px; background: var(--border); }
+        .block { background: var(--card); padding: 1.25rem 1.3rem; display: flex; flex-direction: column; }
+        .block-header { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.8rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--border); }
         .block-icon { font-size: 1.25rem; flex-shrink: 0; }
         .block-title { font-weight: 700; font-size: 1.08rem; letter-spacing: 0.01em; }
         .block-title.breaking { color: var(--breaking); }
-        .refresh-btn {
-            margin-left: auto; background: none; border: 1px solid var(--border);
-            color: var(--accent); cursor: pointer; font-size: 0.75rem;
-            padding: 0.15rem 0.5rem; border-radius: 4px; transition: all 0.2s;
-            flex-shrink: 0; font-weight: 500;
-        }
+        .refresh-btn { margin-left: auto; background: none; border: 1px solid var(--border); color: var(--accent); cursor: pointer; font-size: 0.75rem;
+            padding: 0.15rem 0.5rem; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; font-weight: 500; }
         .refresh-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
         .news-list { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; flex: 1; }
         .news-item { display: flex; flex-direction: column; gap: 0.22rem; }
-        .news-title { 
-            font-weight: 500; font-size: clamp(0.95rem, 0.7vw + 0.5rem, 1.05rem);
-            line-height: 1.6; hyphens: auto; overflow-wrap: break-word;
-        }
+        .news-title { font-weight: 500; font-size: clamp(0.95rem, 0.7vw + 0.5rem, 1.05rem); line-height: 1.6; hyphens: auto; overflow-wrap: break-word; }
         .news-title a { color: var(--text); text-decoration: none; transition: color 0.2s; }
         .news-title a:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1.5px; }
-        .news-meta {
-            font-size: 0.75rem; color: var(--text-muted);
-            display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; line-height: 1.45;
-        }
+        .news-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; line-height: 1.45; }
         .news-meta span::before { content: "•"; margin-right: 0.2rem; opacity: 0.5; }
         .news-meta span:first-child::before { content: ""; margin: 0; }
         .loading, .error { font-size: 0.85rem; padding: 0.5rem 0; text-align: center; }
-        .loading { color: var(--text-muted); }
-        .error { color: #d9534f; }
-        
-        /* 🔴 Breaking news badge */
-        .breaking-badge {
-            font-size: 0.65rem; font-weight: 700; color: #fff;
-            background: var(--breaking); padding: 0.15rem 0.4rem;
-            border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em;
-            margin-left: 0.3rem;
-        }
-
+        .loading { color: var(--text-muted); } .error { color: #d9534f; }
+        .breaking-badge { font-size: 0.65rem; font-weight: 700; color: #fff; background: var(--breaking); padding: 0.15rem 0.4rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em; margin-left: 0.3rem; }
         @media (max-width: 768px) {
             header { grid-template-columns: auto; gap: 0.5rem; padding: 0.55rem 0.9rem; }
-            .header-left { text-align: left; order: 1; }
-            .masthead { order: 2; justify-content: flex-start; gap: 0.5rem; }
-            .theme-btn { justify-self: end; order: 3; margin-left: auto; }
-            .site-title { font-size: 1.5rem; }
-            .newspaper-icon { width: 34px; height: 34px; }
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .block { padding: 1.05rem 1.1rem; }
-            .day-names { font-size: 0.82rem; }
-            .date-time { font-size: 0.8rem; }
+            .header-left { text-align: left; order: 1; } .masthead { order: 2; justify-content: flex-start; gap: 0.5rem; }
+            .theme-btn { justify-self: end; order: 3; margin-left: auto; } .site-title { font-size: 1.5rem; }
+            .newspaper-icon { width: 34px; height: 34px; } .dashboard-grid { grid-template-columns: 1fr; }
+            .block { padding: 1.05rem 1.1rem; } .day-names { font-size: 0.82rem; } .date-time { font-size: 0.8rem; }
         }
-        @media (prefers-reduced-motion: reduce) { 
-            * { transition: none !important; } 
-            .newspaper-icon:hover { transform: none; } 
-        }
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .newspaper-icon:hover { transform: none; } }
     </style>
 </head>
 <body>
     <header>
         <div class="header-left" id="header-left">Loading...</div>
-        
         <div class="masthead">
-            <!-- 🗞️ Retro Newspaper Logo -->
             <svg class="newspaper-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 4C10 2.89543 10.8954 2 12 2H44L58 16V60C58 61.1046 57.1046 62 56 62H12C10.8954 62 10 61.1046 10 60V4Z" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2.5"/>
                 <path d="M44 2V16H58" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -174,32 +85,15 @@
                 <rect x="18" y="42" width="16" height="2.5" rx="1.25" fill="currentColor" fill-opacity="0.8"/>
                 <rect x="42" y="30" width="6" height="6" rx="1" fill="currentColor" fill-opacity="0.5"/>
             </svg>
-            
             <h1 class="site-title">আজকের খবর</h1>
         </div>
-        
         <button class="theme-btn" id="theme-toggle">🌙 Dark</button>
     </header>
-
-    <main>
-        <div class="dashboard-grid" id="dashboard"></div>
-    </main>
+    <main><div class="dashboard-grid" id="dashboard"></div></main>
 
     <script>
-        // 🔧 CONFIG: First block = Eilmeldungen (German Breaking News)
         const DASHBOARD_CONFIG = [
-            { 
-                id: 'eilmeldungen', 
-                icon: '🚨', 
-                title: 'Eilmeldungen', 
-                isBreaking: true,
-                feeds: [
-                    'https://www.tagesschau.de/xml/rss2/',
-                    'https://www.mdr.de/nachrichten/index.rss',
-                    'https://www.dw.com/de/top-stories/rss',
-                    'https://www.focus.de/rss/index.rss'
-                ]
-            },
+            { id: 'eilmeldungen', icon: '🚨', title: 'Eilmeldungen', isBreaking: true, feeds: ['https://www.tagesschau.de/xml/rss2/', 'https://www.mdr.de/nachrichten/index.rss'] },
             { id: 'germany', icon: '🇩🇪', title: 'Germany', feeds: ['https://www.tagesschau.de/xml/rss2/'] },
             { id: 'health', icon: '🩺', title: 'Health', feeds: ['https://feeds.bbci.co.uk/news/health/rss.xml'] },
             { id: 'innovation', icon: '💡', title: 'Innovation', feeds: ['https://techcrunch.com/feed/'] },
@@ -213,8 +107,7 @@
 
         const RSS2JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
         const MAX_ITEMS_PER_BLOCK = 5;
-        const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 min for breaking news
-
+        const REFRESH_INTERVAL_MS = 10 * 60 * 1000;
         const dashboard = document.getElementById('dashboard');
         const headerLeft = document.getElementById('header-left');
         const themeBtn = document.getElementById('theme-toggle');
@@ -226,30 +119,24 @@
             const bn = new Intl.DateTimeFormat('bn-BD', { weekday: 'long' }).format(date);
             return `${en} / ${de} / ${bn}`;
         }
-
         function updateHeader() {
             const now = new Date();
             const dayNames = getTrilingualDay(now);
             const dateNum = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             const updated = lastUpdatedTime ? ` (Updated: ${lastUpdatedTime})` : '';
-            
-            headerLeft.innerHTML = `
-                <span class="day-names">${dayNames}</span>
-                <span class="date-time">${dateNum}, ${timeStr}${updated}</span>
-            `;
+            headerLeft.innerHTML = `<span class="day-names">${dayNames}</span><span class="date-time">${dateNum}, ${timeStr}${updated}</span>`;
         }
-        setInterval(updateHeader, 1000);
-        updateHeader();
+        setInterval(updateHeader, 1000); updateHeader();
 
         function setTheme(dark) {
             document.body.setAttribute('data-theme', dark ? 'dark' : '');
             themeBtn.textContent = dark ? '☀️ Light' : '🌙 Dark';
             localStorage.setItem('theme', dark ? 'dark' : 'light');
         }
-        const saved = localStorage.getItem('theme');
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setTheme(saved ? saved === 'dark' : systemDark);
+        // 💡 ডিফল্ট লাইট মোড। শুধু ইউজার যদি আগে ডার্ক সেভ করে থাকে, তবেই ডার্ক হবে।
+        const savedTheme = localStorage.getItem('theme');
+        setTheme(savedTheme === 'dark');
         themeBtn.addEventListener('click', () => setTheme(document.body.getAttribute('data-theme') !== 'dark'));
 
         async function fetchFeed(url) {
@@ -260,32 +147,23 @@
             return data.items;
         }
 
-        // 🔴 Filter: Only last 24 hours items
         function isWithin24Hours(pubDate) {
             if (!pubDate) return false;
-            const itemTime = new Date(pubDate).getTime();
-            const now = Date.now();
-            const twentyFourHours = 24 * 60 * 60 * 1000;
-            return (now - itemTime) <= twentyFourHours;
+            const t = new Date(pubDate).getTime();
+            return !isNaN(t) && (Date.now() - t) <= (24 * 60 * 60 * 1000);
         }
 
         function createBlock(cfg) {
-            const el = document.createElement('article');
-            el.className = 'block';
-            // Add special style for breaking news block
+            const el = document.createElement('article'); el.className = 'block';
             const breakingClass = cfg.isBreaking ? 'breaking' : '';
-            const breakingBadge = cfg.isBreaking ? '<span class="breaking-badge">Live</span>' : '';
-            
+            const badge = cfg.isBreaking ? '<span class="breaking-badge">Live</span>' : '';
             el.innerHTML = `
                 <div class="block-header">
                     <span class="block-icon">${cfg.icon}</span>
-                    <h2 class="block-title ${breakingClass}">${cfg.title}${breakingBadge}</h2>
+                    <h2 class="block-title ${breakingClass}">${cfg.title}${badge}</h2>
                     <button class="refresh-btn" data-id="${cfg.id}">↻</button>
                 </div>
-                <ul class="news-list" id="list-${cfg.id}">
-                    <li class="loading">Fetching headlines…</li>
-                </ul>
-            `;
+                <ul class="news-list" id="list-${cfg.id}"><li class="loading">Fetching…</li></ul>`;
             return el;
         }
 
@@ -294,35 +172,27 @@
             try {
                 let all = [];
                 for (const url of cfg.feeds) {
-                    try { all = [...all, ...(await fetchFeed(url))]; } catch(e) {}
+                    try { all = [...all, ...(await fetchFeed(url))]; } catch(e) { console.warn(`Feed err: ${url}`, e); }
                 }
-                
-                // 🔴 Filter for last 24 hours + dedupe + sort + limit
-                const seen = new Set();
-                const items = all
-                    .filter(i => isWithin24Hours(i.pubDate))
-                    .filter(i => !seen.has(i.link) && seen.add(i.link))
-                    .sort((a,b) => new Date(b.pubDate||0) - new Date(a.pubDate||0))
-                    .slice(0, MAX_ITEMS_PER_BLOCK);
+                if (!all.length) { list.innerHTML = `<li class="error">Feed temporarily unavailable.</li>`; return; }
 
-                if (!items.length) { 
-                    list.innerHTML = `<li class="error">Keine Eilmeldungen in den letzten 24h.</li>`; 
-                    return; 
-                }
+                const seen = new Set();
+                let items = all.filter(i => { if (!i.link || seen.has(i.link)) return false; seen.add(i.link); return true; });
+                if (cfg.isBreaking) items = items.filter(i => isWithin24Hours(i.pubDate));
+                items.sort((a,b) => new Date(b.pubDate||0) - new Date(a.pubDate||0));
+                items = items.slice(0, MAX_ITEMS_PER_BLOCK);
+
+                if (!items.length) { list.innerHTML = `<li class="error">Keine Meldungen in den letzten 24h.</li>`; return; }
 
                 list.innerHTML = items.map(i => {
-                    const d = i.pubDate ? new Date(i.pubDate) : null;
-                    const time = d ? d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) : '';
-                    const src = new URL(i.link).hostname.replace('www.','').split('.')[0];
-                    return `<li class="news-item">
-                        <div class="news-title"><a href="${i.link}" target="_blank" rel="noopener">${i.title}</a></div>
-                        <div class="news-meta">
-                            ${time ? `<span>${time}</span>` : ''}<span>${src}</span>
-                        </div>
-                    </li>`;
+                    let time = '';
+                    if (i.pubDate) { const d = new Date(i.pubDate); if (!isNaN(d)) time = d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}); }
+                    const src = i.link ? new URL(i.link).hostname.replace('www.','').split('.')[0] : 'news';
+                    return `<li class="news-item"><div class="news-title"><a href="${i.link}" target="_blank" rel="noopener">${i.title}</a></div>
+                    <div class="news-meta">${time ? `<span>${time}</span>` : ''}<span>${src}</span></div></li>`;
                 }).join('');
             } catch(err) {
-                list.innerHTML = `<li class="error">Failed. <button class="refresh-btn" data-id="${cfg.id}">Retry</button></li>`;
+                list.innerHTML = `<li class="error">Load failed. <button class="refresh-btn" data-id="${cfg.id}">Retry</button></li>`;
             }
         }
 
@@ -336,10 +206,7 @@
         dashboard.addEventListener('click', e => {
             if (e.target.classList.contains('refresh-btn')) {
                 const cfg = DASHBOARD_CONFIG.find(c => c.id === e.target.dataset.id);
-                if (cfg) {
-                    e.target.disabled = true; e.target.textContent = '…';
-                    loadBlock(cfg).finally(() => { e.target.textContent = '↻'; e.target.disabled = false; });
-                }
+                if (cfg) { e.target.disabled = true; e.target.textContent = '…'; loadBlock(cfg).finally(() => { e.target.textContent = '↻'; e.target.disabled = false; }); }
             }
         });
 
