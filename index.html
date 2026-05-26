@@ -20,6 +20,7 @@
             --accent: #8c6a48;
             --accent-hover: #6d5035;
             --shadow: 0 2px 10px rgba(0,0,0,0.04);
+            --breaking: #dc2626; /* 🔴 Breaking news accent */
         }
         [data-theme="dark"] {
             --bg: #131417;
@@ -30,6 +31,7 @@
             --accent: #b89b7a;
             --accent-hover: #d4b896;
             --shadow: 0 2px 14px rgba(0,0,0,0.3);
+            --breaking: #ef4444;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -105,6 +107,7 @@
         }
         .block-icon { font-size: 1.25rem; flex-shrink: 0; }
         .block-title { font-weight: 700; font-size: 1.08rem; letter-spacing: 0.01em; }
+        .block-title.breaking { color: var(--breaking); }
         .refresh-btn {
             margin-left: auto; background: none; border: 1px solid var(--border);
             color: var(--accent); cursor: pointer; font-size: 0.75rem;
@@ -129,8 +132,15 @@
         .loading, .error { font-size: 0.85rem; padding: 0.5rem 0; text-align: center; }
         .loading { color: var(--text-muted); }
         .error { color: #d9534f; }
+        
+        /* 🔴 Breaking news badge */
+        .breaking-badge {
+            font-size: 0.65rem; font-weight: 700; color: #fff;
+            background: var(--breaking); padding: 0.15rem 0.4rem;
+            border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em;
+            margin-left: 0.3rem;
+        }
 
-        /* 📱 Mobile Responsive Styles */
         @media (max-width: 768px) {
             header { grid-template-columns: auto; gap: 0.5rem; padding: 0.55rem 0.9rem; }
             .header-left { text-align: left; order: 1; }
@@ -138,7 +148,7 @@
             .theme-btn { justify-self: end; order: 3; margin-left: auto; }
             .site-title { font-size: 1.5rem; }
             .newspaper-icon { width: 34px; height: 34px; }
-            .dashboard-grid { grid-template-columns: 1fr; } /* Single column on mobile */
+            .dashboard-grid { grid-template-columns: 1fr; }
             .block { padding: 1.05rem 1.1rem; }
             .day-names { font-size: 0.82rem; }
             .date-time { font-size: 0.8rem; }
@@ -176,9 +186,20 @@
     </main>
 
     <script>
-        // 🔧 10 TOPICS
+        // 🔧 CONFIG: First block = Eilmeldungen (German Breaking News)
         const DASHBOARD_CONFIG = [
-            { id: 'dresden', icon: '🏛️', title: 'Dresden', feeds: ['https://www.mdr.de/nachrichten/sachsen/dresden/index.rss'] },
+            { 
+                id: 'eilmeldungen', 
+                icon: '🚨', 
+                title: 'Eilmeldungen', 
+                isBreaking: true,
+                feeds: [
+                    'https://www.tagesschau.de/xml/rss2/',
+                    'https://www.mdr.de/nachrichten/index.rss',
+                    'https://www.dw.com/de/top-stories/rss',
+                    'https://www.focus.de/rss/index.rss'
+                ]
+            },
             { id: 'germany', icon: '🇩🇪', title: 'Germany', feeds: ['https://www.tagesschau.de/xml/rss2/'] },
             { id: 'health', icon: '🩺', title: 'Health', feeds: ['https://feeds.bbci.co.uk/news/health/rss.xml'] },
             { id: 'innovation', icon: '💡', title: 'Innovation', feeds: ['https://techcrunch.com/feed/'] },
@@ -192,7 +213,7 @@
 
         const RSS2JSON_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
         const MAX_ITEMS_PER_BLOCK = 5;
-        const REFRESH_INTERVAL_MS = 12 * 60 * 1000;
+        const REFRESH_INTERVAL_MS = 10 * 60 * 1000; // 10 min for breaking news
 
         const dashboard = document.getElementById('dashboard');
         const headerLeft = document.getElementById('header-left');
@@ -239,13 +260,26 @@
             return data.items;
         }
 
+        // 🔴 Filter: Only last 24 hours items
+        function isWithin24Hours(pubDate) {
+            if (!pubDate) return false;
+            const itemTime = new Date(pubDate).getTime();
+            const now = Date.now();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            return (now - itemTime) <= twentyFourHours;
+        }
+
         function createBlock(cfg) {
             const el = document.createElement('article');
             el.className = 'block';
+            // Add special style for breaking news block
+            const breakingClass = cfg.isBreaking ? 'breaking' : '';
+            const breakingBadge = cfg.isBreaking ? '<span class="breaking-badge">Live</span>' : '';
+            
             el.innerHTML = `
                 <div class="block-header">
                     <span class="block-icon">${cfg.icon}</span>
-                    <h2 class="block-title">${cfg.title}</h2>
+                    <h2 class="block-title ${breakingClass}">${cfg.title}${breakingBadge}</h2>
                     <button class="refresh-btn" data-id="${cfg.id}">↻</button>
                 </div>
                 <ul class="news-list" id="list-${cfg.id}">
@@ -262,17 +296,23 @@
                 for (const url of cfg.feeds) {
                     try { all = [...all, ...(await fetchFeed(url))]; } catch(e) {}
                 }
+                
+                // 🔴 Filter for last 24 hours + dedupe + sort + limit
                 const seen = new Set();
                 const items = all
+                    .filter(i => isWithin24Hours(i.pubDate))
                     .filter(i => !seen.has(i.link) && seen.add(i.link))
                     .sort((a,b) => new Date(b.pubDate||0) - new Date(a.pubDate||0))
                     .slice(0, MAX_ITEMS_PER_BLOCK);
 
-                if (!items.length) { list.innerHTML = `<li class="error">No live headlines.</li>`; return; }
+                if (!items.length) { 
+                    list.innerHTML = `<li class="error">Keine Eilmeldungen in den letzten 24h.</li>`; 
+                    return; 
+                }
 
                 list.innerHTML = items.map(i => {
                     const d = i.pubDate ? new Date(i.pubDate) : null;
-                    const time = d ? d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : '';
+                    const time = d ? d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) : '';
                     const src = new URL(i.link).hostname.replace('www.','').split('.')[0];
                     return `<li class="news-item">
                         <div class="news-title"><a href="${i.link}" target="_blank" rel="noopener">${i.title}</a></div>
